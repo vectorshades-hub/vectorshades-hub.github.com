@@ -226,9 +226,14 @@ textarea{resize:vertical;min-height:100px;line-height:1.55;}
       <input type="file" id="fi" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"/>
       <div class="d-ico">📎</div>
       <p><strong>Tap to browse</strong> or drag files here</p>
-      <small>Images, PDF, Word, Excel · max 5 files · max 10 MB each</small>
+      <small>Images, PDF, Word, Excel · max 5 files · max 5 MB each</small>
     </div>
     <div class="chips" id="chips"></div>
+    <!-- File size error banner -->
+    <div id="file-err-banner" style="display:none;background:#FFF2F0;border:1px solid #FFCCC7;border-radius:8px;padding:10px 13px;margin-top:9px;">
+      <div style="font-size:.78rem;font-weight:700;color:#E53935;">⚠️ File size exceeded.</div>
+      <div style="font-size:.75rem;color:#7f0000;margin-top:2px;">Please select a file within <strong>5 MB</strong>.</div>
+    </div>
   </div>
 
   <hr class="dv"/>
@@ -302,9 +307,9 @@ textarea{resize:vertical;min-height:100px;line-height:1.55;}
 // ║  Leave TEAMS_WEBHOOK = "" to disable Teams              ║
 // ╚══════════════════════════════════════════════════════════╝
 
-const WA_NUMBER     = "919995397808";      // ← WhatsApp number
+const WA_NUMBER     = "60123456789";      // ← WhatsApp number
 const WA_DISPLAY    = "+60 123 456 789";  // ← display format
-const TEAMS_WEBHOOK = "https://defaultb4a8565fd9a04d73b10a6a22d6f677.7b.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ba21ce6e01f74d7e9474cb7e8c6bb755/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=5cX0U4lhiCtftrfLIWqyMx9tBZoebPr9hgL_B2pVXJE";                 // ← paste Teams webhook URL here
+const TEAMS_WEBHOOK = "";                 // ← paste Teams webhook URL here
 
 // ════════════════════════════════════════════════════════════
 
@@ -354,9 +359,15 @@ function rmFile(i) { files.splice(i, 1); renderChips(); }
 function addFiles(incoming) {
   const tooBig  = incoming.filter(f => f.size > MAX_FILE_MB * 1024 * 1024);
   const okFiles = incoming.filter(f => f.size <= MAX_FILE_MB * 1024 * 1024);
+  const banner  = document.getElementById("file-err-banner");
 
   if (tooBig.length > 0) {
-    toast(`⚠️ ${tooBig.map(f => f.name).join(", ")} exceed${tooBig.length===1?"s":""} the ${MAX_FILE_MB} MB limit and were not added.`, "err");
+    banner.style.display = "block";
+    // Auto-hide after 5 seconds
+    clearTimeout(banner._t);
+    banner._t = setTimeout(() => { banner.style.display = "none"; }, 5000);
+  } else {
+    banner.style.display = "none";
   }
 
   files = [...files, ...okFiles].slice(0, 5);
