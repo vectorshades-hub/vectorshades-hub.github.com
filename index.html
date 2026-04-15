@@ -226,7 +226,7 @@ textarea{resize:vertical;min-height:100px;line-height:1.55;}
       <input type="file" id="fi" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"/>
       <div class="d-ico">📎</div>
       <p><strong>Tap to browse</strong> or drag files here</p>
-      <small>Files are attached to the Teams card only</small>
+      <small>Images, PDF, Word, Excel · max 5 files · max 10 MB each</small>
     </div>
     <div class="chips" id="chips"></div>
   </div>
@@ -333,24 +333,40 @@ const FICO = {jpg:"🖼️",jpeg:"🖼️",png:"🖼️",gif:"🖼️",webp:"�
 const fIco = n => FICO[n.split(".").pop().toLowerCase()] ?? "📎";
 const fSz  = b => b < 1024 ? b+" B" : b < 1048576 ? (b/1024).toFixed(1)+" KB" : (b/1048576).toFixed(1)+" MB";
 
+const MAX_FILE_MB = 5; // Maximum file size per file in MB
+
 function renderChips() {
   chEl.innerHTML = "";
   files.forEach((f, i) => {
+    const oversized = f.size > MAX_FILE_MB * 1024 * 1024;
     const c = document.createElement("div");
-    c.className = "chip";
+    c.className = "chip" + (oversized ? " chip-err" : "");
     c.innerHTML = `<span class="chip-ico">${fIco(f.name)}</span>
       <span class="chip-name" title="${f.name}">${f.name}</span>
-      <span class="chip-sz">${fSz(f.size)}</span>
+      <span class="chip-sz" style="${oversized ? "color:#E53935;font-weight:700;" : ""}">${fSz(f.size)}${oversized ? " ⚠️ Too large" : ""}</span>
       <span class="teams-tag">Teams</span>
       <button class="chip-del" onclick="rmFile(${i})">✕</button>`;
     chEl.appendChild(c);
   });
 }
 function rmFile(i) { files.splice(i, 1); renderChips(); }
-fiEl.addEventListener("change", () => { files = [...files, ...Array.from(fiEl.files)].slice(0, 5); renderChips(); fiEl.value = ""; });
+
+function addFiles(incoming) {
+  const tooBig  = incoming.filter(f => f.size > MAX_FILE_MB * 1024 * 1024);
+  const okFiles = incoming.filter(f => f.size <= MAX_FILE_MB * 1024 * 1024);
+
+  if (tooBig.length > 0) {
+    toast(`⚠️ ${tooBig.map(f => f.name).join(", ")} exceed${tooBig.length===1?"s":""} the ${MAX_FILE_MB} MB limit and were not added.`, "err");
+  }
+
+  files = [...files, ...okFiles].slice(0, 5);
+  renderChips();
+}
+
+fiEl.addEventListener("change", () => { addFiles(Array.from(fiEl.files)); fiEl.value = ""; });
 dropEl.addEventListener("dragover", e => { e.preventDefault(); dropEl.classList.add("over"); });
 dropEl.addEventListener("dragleave", () => dropEl.classList.remove("over"));
-dropEl.addEventListener("drop", e => { e.preventDefault(); dropEl.classList.remove("over"); files = [...files, ...Array.from(e.dataTransfer.files)].slice(0, 5); renderChips(); });
+dropEl.addEventListener("drop", e => { e.preventDefault(); dropEl.classList.remove("over"); addFiles(Array.from(e.dataTransfer.files)); });
 
 // ── Validation ────────────────────────────────────────────────────────────
 function chk(id, eid, v) {
