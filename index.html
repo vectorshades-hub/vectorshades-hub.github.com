@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Project Issue Report — Vectorshades</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --green:#25D366;--green-d:#128C7E;--green-dd:#075E54;
+  --green-lt:#E9FAF1;--green-faint:#F5FBF7;
+  --purple:#6264A7;--purple-d:#464775;--purple-lt:#EEEEF8;
+  --bg:#EFF2F5;--card:#fff;--text:#111B21;
+  --mid:#54656F;--muted:#8696A0;--border:#E9EDEF;
+  --error:#E53935;--r:12px;--shadow:0 4px 24px rgba(0,0,0,.09);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding-bottom:60px;-webkit-font-smoothing:antialiased;}
+
+/* BANNER */
+.banner{width:100%;background:linear-gradient(155deg,var(--green-dd),var(--green-d) 55%,var(--green));padding:18px 20px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;}
+.banner::before{content:'';position:absolute;right:-20px;top:-20px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.06);}
+.brand{display:flex;align-items:center;gap:10px;z-index:1;flex-shrink:0;}
+.brand-logo{width:38px;height:38px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.brand-name{font-family:'DM Serif Display',serif;font-size:.95rem;color:#fff;letter-spacing:.2px;line-height:1.2;}
+.brand-sub{font-size:.58rem;color:rgba(255,255,255,.55);letter-spacing:.5px;text-transform:uppercase;}
+.banner-divider{width:1px;height:30px;background:rgba(255,255,255,.2);margin:0 2px;z-index:1;flex-shrink:0;}
+.b-txt{z-index:1;}
+.b-txt h1{font-family:'DM Serif Display',serif;font-size:1.15rem;color:#fff;letter-spacing:-.2px;}
+.b-txt p{font-size:.7rem;color:rgba(255,255,255,.6);margin-top:1px;}
+.b-badge{margin-left:auto;z-index:1;flex-shrink:0;display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:.66rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:5px 11px;border-radius:20px;}
+.dot{width:6px;height:6px;border-radius:50%;background:#69F0AE;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* CARD */
+.card{width:min(520px,100%);background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);margin-top:18px;border:1px solid var(--border);overflow:hidden;}
+.cbody{padding:22px 20px 26px;}
+
+/* SECTION */
+.sec{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.sico{width:25px;height:25px;border-radius:6px;background:var(--green-lt);display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0;}
+.slbl{font-size:.67rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green-d);}
+.sline{flex:1;height:1px;background:var(--border);}
+hr.dv{border:none;border-top:1px solid var(--border);margin:16px 0;}
+
+/* CONTACT BOX */
+.contact-box{display:flex;align-items:center;gap:10px;background:var(--green-lt);border:1.5px solid rgba(37,211,102,.3);border-radius:9px;padding:11px 14px;margin-bottom:16px;}
+.contact-box .cb-icon{font-size:1.1rem;flex-shrink:0;}
+.cb-label{font-size:.7rem;color:var(--muted);margin-bottom:2px;}
+.cb-num{font-size:.9rem;font-weight:700;color:var(--green-dd);}
+.cb-right{margin-left:auto;text-align:right;}
+.cb-channels{display:flex;gap:5px;align-items:center;margin-top:3px;}
+.cb-tag{font-size:.63rem;font-weight:700;padding:2px 7px;border-radius:20px;}
+.cb-tag.wa{background:var(--green-lt);color:var(--green-dd);border:1px solid rgba(37,211,102,.3);}
+.cb-tag.teams{background:var(--purple-lt);color:var(--purple-d);border:1px solid rgba(98,100,167,.25);}
+.cb-avail{font-size:.65rem;color:var(--muted);}
+
+/* FIELDS */
+.row{display:flex;gap:11px;}.row .fld{flex:1;}
+.fld{margin-bottom:13px;}.fld:last-child{margin-bottom:0;}
+label{display:block;font-size:.76rem;font-weight:600;color:var(--text);margin-bottom:4px;}
+label .req{color:var(--error);}label .opt{font-weight:400;color:var(--muted);font-size:.88em;margin-left:3px;}
+input[type=text],textarea{width:100%;padding:9px 12px;font-family:inherit;font-size:.875rem;color:var(--text);background:var(--green-faint);border:1.5px solid var(--border);border-radius:8px;outline:none;transition:border-color .15s,box-shadow .15s,background .15s;}
+input[type=text]:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(37,211,102,.12);background:#fff;}
+input.inv,textarea.inv{border-color:var(--error);box-shadow:0 0 0 3px rgba(229,57,53,.1);}
+textarea{resize:vertical;min-height:100px;line-height:1.55;}
+.crow{display:flex;justify-content:flex-end;margin-top:3px;}
+.cct{font-size:.7rem;color:var(--muted);}
+.err{font-size:.71rem;color:var(--error);margin-top:3px;display:none;}.err.show{display:block;}
+
+/* FILE UPLOAD */
+.drop{border:2px dashed var(--border);border-radius:9px;padding:18px;text-align:center;cursor:pointer;background:var(--green-faint);position:relative;transition:all .2s;}
+.drop:hover,.drop.over{border-color:var(--green);background:var(--green-lt);}
+.drop input[type=file]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;}
+.d-ico{font-size:1.5rem;margin-bottom:5px;}
+.drop p{font-size:.78rem;color:var(--mid);}
+.drop p strong{color:var(--green-d);}
+.drop small{font-size:.68rem;color:var(--muted);display:block;margin-top:2px;}
+.chips{margin-top:9px;display:flex;flex-direction:column;gap:5px;}
+.chip{display:flex;align-items:center;gap:8px;background:var(--green-lt);border:1px solid rgba(37,211,102,.2);border-radius:7px;padding:6px 10px;font-size:.76rem;color:var(--text);}
+.chip-ico{font-size:.88rem;flex-shrink:0;}
+.chip-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.chip-sz{font-size:.67rem;color:var(--muted);white-space:nowrap;}
+.chip-del{cursor:pointer;color:var(--error);font-size:.88rem;background:none;border:none;padding:0;flex-shrink:0;}
+.teams-tag{font-size:.63rem;font-weight:700;background:var(--purple-lt);color:var(--purple-d);border:1px solid rgba(98,100,167,.25);border-radius:20px;padding:1px 6px;white-space:nowrap;}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:10px;margin-top:4px;}
+.btn-prev{padding:12px 16px;background:transparent;border:1.5px solid var(--green-d);color:var(--green-d);font-family:inherit;font-size:.88rem;font-weight:700;border-radius:9px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-prev:hover{background:var(--green-lt);}
+.btn-submit{flex:1;padding:13px;background:linear-gradient(135deg,var(--green-d),var(--green));color:#fff;font-family:inherit;font-size:.9rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 3px 14px rgba(37,211,102,.38);transition:opacity .15s,transform .1s;}
+.btn-submit:hover{opacity:.92;}.btn-submit:active{transform:scale(.98);}
+.btn-submit:disabled{background:var(--muted);box-shadow:none;cursor:not-allowed;opacity:1;}
+.submit-icons{display:flex;align-items:center;gap:4px;font-size:.85rem;}
+
+/* PREVIEW CARD */
+#prev-card{display:none;width:min(520px,100%);background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);margin-top:18px;border:2px solid var(--green);overflow:hidden;animation:fadeUp .3s both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.prev-hdr{background:var(--green-dd);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.prev-hdr span{font-size:.78rem;font-weight:700;color:#fff;}
+.prev-tag{font-size:.63rem;font-weight:700;background:rgba(255,255,255,.2);color:#fff;border-radius:20px;padding:2px 7px;border:1px solid rgba(255,255,255,.3);}
+.prev-body{padding:16px 16px 20px;}
+.phone{background:#E5DDD5;border-radius:13px;padding:0 9px 12px;overflow:hidden;}
+.wa-bar{background:#075E54;margin:0 -9px;padding:8px 13px;display:flex;align-items:center;gap:9px;margin-bottom:11px;}
+.wa-av{width:30px;height:30px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.wa-info .wn{font-size:.77rem;font-weight:600;color:#fff;}
+.wa-info .ws{font-size:.63rem;color:rgba(255,255,255,.6);}
+.bubble{background:#005C4B;border-radius:8px 0 8px 8px;padding:9px 11px 7px;max-width:92%;margin-left:auto;position:relative;box-shadow:0 1px 2px rgba(0,0,0,.2);}
+.bubble::after{content:'';position:absolute;top:0;right:-7px;border:7px solid transparent;border-top-color:#005C4B;border-right:none;}
+.bubble-text{font-size:.77rem;color:#E9EDEF;white-space:pre-wrap;word-break:break-word;line-height:1.5;}
+.bubble-text b{color:#fff;}.bubble-text i{color:#d0dce0;}.bubble-text .sep{color:#4FC2A4;font-weight:600;}
+.bubble-ts{font-size:.62rem;color:rgba(233,238,223,.5);text-align:right;margin-top:4px;display:flex;align-items:center;justify-content:flex-end;gap:3px;}
+.ticks{color:#53BDEB;}
+.prev-actions{display:flex;gap:8px;margin-top:14px;}
+.btn-edit{padding:10px 14px;background:transparent;border:1.5px solid var(--border);color:var(--mid);font-family:inherit;font-size:.83rem;font-weight:600;border-radius:9px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-edit:hover{border-color:var(--muted);color:var(--text);}
+.btn-copy{padding:10px 13px;background:transparent;border:1.5px solid var(--border);color:var(--mid);font-family:inherit;font-size:.83rem;font-weight:600;border-radius:9px;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.btn-copy:hover{border-color:var(--green);color:var(--green-d);}
+.btn-copy.done{border-color:var(--green);color:var(--green-d);background:var(--green-lt);}
+.btn-confirm{flex:1;padding:10px;background:linear-gradient(135deg,var(--green-d),var(--green));color:#fff;font-family:inherit;font-size:.83rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 2px 10px rgba(37,211,102,.32);transition:opacity .15s,transform .1s;}
+.btn-confirm:hover{opacity:.9;}.btn-confirm:active{transform:scale(.98);}
+.btn-confirm:disabled{background:var(--muted);box-shadow:none;cursor:not-allowed;opacity:1;}
+
+/* PROGRESS */
+#prog{display:none;background:var(--green-lt);border:1px solid rgba(37,211,102,.22);border-radius:9px;padding:10px 13px;margin-bottom:13px;}
+#prog-txt{font-size:.75rem;color:var(--mid);margin-bottom:6px;font-weight:500;}
+.ptrack{background:var(--border);border-radius:99px;height:4px;overflow:hidden;}
+#prog-bar{height:100%;background:var(--green);border-radius:99px;width:0%;transition:width .3s;}
+
+/* SUCCESS */
+#suc-card{display:none;width:min(520px,100%);background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);margin-top:18px;border:1px solid var(--border);overflow:hidden;}
+.suc-body{padding:34px 22px 30px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;}
+.sring{width:66px;height:66px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.9rem;color:#fff;box-shadow:0 6px 18px rgba(37,211,102,.32);animation:pop .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.suc-body h2{font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--text);}
+.suc-delivery{display:flex;flex-direction:column;gap:7px;width:100%;margin-top:4px;}
+.suc-row{display:flex;align-items:center;gap:9px;background:var(--bg);border-radius:8px;padding:9px 12px;font-size:.78rem;color:var(--mid);}
+.suc-row .suc-ico{font-size:1rem;flex-shrink:0;}
+.suc-row .suc-lbl{font-weight:600;color:var(--text);}
+.suc-row.ok-wa  .suc-ico::after{content:'✓';font-size:.65rem;color:var(--green);margin-left:2px;}
+.suc-row.ok-teams .suc-ico::after{content:'✓';font-size:.65rem;color:var(--purple);margin-left:2px;}
+.suc-row.skip{opacity:.5;}
+.btn-new{padding:9px 24px;background:transparent;border:2px solid var(--border);color:var(--mid);font-family:inherit;font-size:.82rem;font-weight:600;border-radius:9px;cursor:pointer;margin-top:6px;transition:all .15s;}
+.btn-new:hover{border-color:var(--green);color:var(--green-d);}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e2228;color:#fff;font-size:.78rem;font-weight:500;padding:10px 18px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.25);transition:transform .3s cubic-bezier(.34,1.2,.64,1),opacity .3s;opacity:0;z-index:999;white-space:nowrap;}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+#toast.ok{border-left:3px solid var(--green);}
+#toast.err{border-left:3px solid #E53935;}
+
+.foot{margin-top:18px;font-size:.69rem;color:var(--muted);text-align:center;}
+</style>
+</head>
+<body>
+
+<!-- BANNER -->
+<div class="banner">
+  <div class="brand">
+    <div class="brand-logo">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <polygon points="4,6 12,6 16,18 20,6 28,6 16,28" fill="white" opacity="0.95"/>
+        <polygon points="16,18 20,6 28,6" fill="white" opacity="0.4"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">Vectorshades</div>
+      <div class="brand-sub">Issue Reporting</div>
+    </div>
+  </div>
+  <div class="banner-divider"></div>
+  <div class="b-txt">
+    <h1>Project Issue Report</h1>
+    <p>Sent to WhatsApp &amp; Microsoft Teams</p>
+  </div>
+  <div class="b-badge"><div class="dot"></div>24 / 7</div>
+</div>
+
+<!-- FORM CARD -->
+<div class="card" id="form-card">
+<div class="cbody">
+
+  <!-- Contact info -->
+  <div class="contact-box">
+    <span class="cb-icon">📡</span>
+    <div style="flex:1;">
+      <div class="cb-label">24/7 Support Contact</div>
+      <div class="cb-num" id="wa-display">+60 123 456 789</div>
+      <div class="cb-channels">
+        <span class="cb-tag wa">💬 WhatsApp</span>
+        <span class="cb-tag teams" id="teams-tag" style="display:none;">🟣 Teams</span>
+      </div>
+    </div>
+    <div class="cb-right"><div class="cb-avail">Available<br>24 × 7</div></div>
+  </div>
+  <input type="hidden" id="wa-num" value="60123456789"/>
+
+  <div class="sec"><div class="sico">🏗️</div><span class="slbl">Project Details</span><div class="sline"></div></div>
+  <div class="row">
+    <div class="fld">
+      <label for="pname">Project Name <span class="req">*</span></label>
+      <input type="text" id="pname" placeholder="e.g. Bridge Expansion"/>
+      <div class="err" id="e-pname">Required.</div>
+    </div>
+    <div class="fld">
+      <label for="pnum">Project No. <span class="req">*</span></label>
+      <input type="text" id="pnum" placeholder="e.g. PRJ-042"/>
+      <div class="err" id="e-pnum">Required.</div>
+    </div>
+  </div>
+
+  <hr class="dv"/>
+  <div class="sec"><div class="sico">⚠️</div><span class="slbl">Issue Details</span><div class="sline"></div></div>
+
+  <div class="fld">
+    <label for="issue">Issue Description <span class="req">*</span></label>
+    <textarea id="issue" maxlength="800" placeholder="Describe the issue — what happened, where, and the impact…"></textarea>
+    <div class="crow"><span class="cct" id="cct">0 / 800</span></div>
+    <div class="err" id="e-issue">Required.</div>
+  </div>
+
+  <!-- File attachments (Teams only) -->
+  <div class="fld" id="file-section">
+    <label>Attachments <span class="opt">(Teams only · images · max 5)</span></label>
+    <div class="drop" id="drop">
+      <input type="file" id="fi" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"/>
+      <div class="d-ico">📎</div>
+      <p><strong>Tap to browse</strong> or drag files here</p>
+      <small>Files are attached to the Teams card only</small>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <hr class="dv"/>
+
+  <!-- Progress bar -->
+  <div id="prog"><div id="prog-txt">Sending…</div><div class="ptrack"><div id="prog-bar"></div></div></div>
+
+  <div class="btn-row">
+    <button class="btn-prev" onclick="preview()">👁️ Preview</button>
+    <button class="btn-submit" id="sub-btn" onclick="submitAll()">
+      <div class="submit-icons">💬 🟣</div>
+      Submit Report
+    </button>
+  </div>
+
+</div>
+</div>
+
+<!-- PREVIEW CARD -->
+<div id="prev-card">
+  <div class="prev-hdr">
+    <span>👁️ &nbsp;Message Preview</span>
+    <span class="prev-tag">TESTING</span>
+  </div>
+  <div class="prev-body">
+    <div class="phone">
+      <div class="wa-bar">
+        <div class="wa-av">🛠️</div>
+        <div class="wa-info">
+          <div class="wn">Support Team</div>
+          <div class="ws" id="prev-num"></div>
+        </div>
+      </div>
+      <div class="bubble">
+        <div class="bubble-text" id="bubble-content"></div>
+        <div class="bubble-ts"><span id="bubble-time"></span><span class="ticks">✓✓</span></div>
+      </div>
+    </div>
+    <div class="prev-actions">
+      <button class="btn-edit" onclick="closePreview()">✏️ Edit</button>
+      <button class="btn-copy" id="copy-btn" onclick="copyMsg()">📋 Copy</button>
+      <button class="btn-confirm" id="conf-btn" onclick="submitAll()">
+        <span class="submit-icons" style="font-size:.8rem;">💬 🟣</span>&nbsp;Confirm &amp; Send
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS CARD -->
+<div id="suc-card">
+  <div class="suc-body">
+    <div class="sring">✓</div>
+    <h2>Report Submitted!</h2>
+    <div class="suc-delivery" id="suc-delivery"></div>
+    <button class="btn-new" onclick="reset()">Submit Another Issue</button>
+  </div>
+</div>
+
+<div class="foot">Vectorshades · WhatsApp &amp; Teams Support · 24 × 7</div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+
+// ╔══════════════════════════════════════════════════════════╗
+// ║                  A D M I N   C O N F I G                ║
+// ╠══════════════════════════════════════════════════════════╣
+// ║  WA_NUMBER    : country code + number, no + or spaces   ║
+// ║  WA_DISPLAY   : formatted display shown to user         ║
+// ║  TEAMS_WEBHOOK: paste your Teams workflow webhook URL   ║
+// ║  Leave TEAMS_WEBHOOK = "" to disable Teams              ║
+// ╚══════════════════════════════════════════════════════════╝
+
+const WA_NUMBER     = "919995397808";      // ← WhatsApp number
+const WA_DISPLAY    = "+60 123 456 789";  // ← display format
+const TEAMS_WEBHOOK = "https://defaultb4a8565fd9a04d73b10a6a22d6f677.7b.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ba21ce6e01f74d7e9474cb7e8c6bb755/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=5cX0U4lhiCtftrfLIWqyMx9tBZoebPr9hgL_B2pVXJE";                 // ← paste Teams webhook URL here
+
+// ════════════════════════════════════════════════════════════
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("wa-num").value           = WA_NUMBER;
+  document.getElementById("wa-display").textContent = WA_DISPLAY;
+  if (TEAMS_WEBHOOK) document.getElementById("teams-tag").style.display = "inline";
+  if (!TEAMS_WEBHOOK) {
+    // Hide file section if Teams not configured (files only go to Teams)
+    // Still show it so user can attach if they later configure
+  }
+});
+
+// ── Char counter ──────────────────────────────────────────────────────────
+const issueEl = document.getElementById("issue"), cctEl = document.getElementById("cct");
+issueEl.addEventListener("input", () => {
+  const n = issueEl.value.length;
+  cctEl.textContent = n + " / 800";
+  cctEl.style.color = n > 640 ? "#E53935" : "var(--muted)";
+});
+
+// ── File handling ─────────────────────────────────────────────────────────
+const dropEl = document.getElementById("drop"), fiEl = document.getElementById("fi"), chEl = document.getElementById("chips");
+let files = [];
+const FICO = {jpg:"🖼️",jpeg:"🖼️",png:"🖼️",gif:"🖼️",webp:"🖼️",pdf:"📄",doc:"📝",docx:"📝",xls:"📊",xlsx:"📊"};
+const fIco = n => FICO[n.split(".").pop().toLowerCase()] ?? "📎";
+const fSz  = b => b < 1024 ? b+" B" : b < 1048576 ? (b/1024).toFixed(1)+" KB" : (b/1048576).toFixed(1)+" MB";
+
+function renderChips() {
+  chEl.innerHTML = "";
+  files.forEach((f, i) => {
+    const c = document.createElement("div");
+    c.className = "chip";
+    c.innerHTML = `<span class="chip-ico">${fIco(f.name)}</span>
+      <span class="chip-name" title="${f.name}">${f.name}</span>
+      <span class="chip-sz">${fSz(f.size)}</span>
+      <span class="teams-tag">Teams</span>
+      <button class="chip-del" onclick="rmFile(${i})">✕</button>`;
+    chEl.appendChild(c);
+  });
+}
+function rmFile(i) { files.splice(i, 1); renderChips(); }
+fiEl.addEventListener("change", () => { files = [...files, ...Array.from(fiEl.files)].slice(0, 5); renderChips(); fiEl.value = ""; });
+dropEl.addEventListener("dragover", e => { e.preventDefault(); dropEl.classList.add("over"); });
+dropEl.addEventListener("dragleave", () => dropEl.classList.remove("over"));
+dropEl.addEventListener("drop", e => { e.preventDefault(); dropEl.classList.remove("over"); files = [...files, ...Array.from(e.dataTransfer.files)].slice(0, 5); renderChips(); });
+
+// ── Validation ────────────────────────────────────────────────────────────
+function chk(id, eid, v) {
+  const el = document.getElementById(id), er = document.getElementById(eid);
+  if (v) { el.classList.remove("inv"); er.classList.remove("show"); return true; }
+  else   { el.classList.add("inv");    er.classList.add("show");    return false; }
+}
+function getF() {
+  return {
+    pname: document.getElementById("pname").value.trim(),
+    pnum : document.getElementById("pnum").value.trim(),
+    issue: document.getElementById("issue").value.trim(),
+    waNum: document.getElementById("wa-num").value.trim()
+  };
+}
+function valid(f) {
+  return !!(chk("pname","e-pname",f.pname) & chk("pnum","e-pnum",f.pnum) & chk("issue","e-issue",f.issue));
+}
+
+// ── Progress ──────────────────────────────────────────────────────────────
+function sp(t, p) { document.getElementById("prog").style.display="block"; document.getElementById("prog-txt").textContent=t; document.getElementById("prog-bar").style.width=p+"%"; }
+function hp() { document.getElementById("prog").style.display="none"; document.getElementById("prog-bar").style.width="0%"; }
+
+// ── Build WhatsApp message ────────────────────────────────────────────────
+function buildWAMsg(f) {
+  return [
+    "📋 *PROJECT ISSUE REPORT*",
+    "━━━━━━━━━━━━━━━━━━━━",
+    `🏗️ *Project Name:* ${f.pname}`,
+    `🔢 *Project No:*   ${f.pnum}`,
+    "",
+    "⚠️ *Issue Description:*",
+    f.issue,
+    "",
+    "━━━━━━━━━━━━━━━━━━━━",
+    `🕐 ${new Date().toLocaleString()}`
+  ].join("\n");
+}
+
+// ── Compress image using canvas → returns base64 JPEG ─────────────────────
+// Tries multiple quality levels until result fits within Teams limit.
+// Returns null if the image cannot be compressed small enough.
+async function compressImage(file) {
+  return new Promise((resolve) => {
+    const MAX_B64 = 150000; // ~150 KB base64 — leaves headroom for rest of payload
+    const img = new Image();
+    const objUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(objUrl);
+
+      // Step 1: resize to max 600×450
+      let w = img.width, h = img.height;
+      const MAX_W = 600, MAX_H = 450;
+      if (w > MAX_W || h > MAX_H) {
+        const r = Math.min(MAX_W / w, MAX_H / h);
+        w = Math.round(w * r); h = Math.round(h * r);
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+
+      // Step 2: try reducing quality until within limit
+      const qualities = [0.65, 0.45, 0.30, 0.20];
+      for (const q of qualities) {
+        const d = canvas.toDataURL("image/jpeg", q);
+        if (d.length <= MAX_B64) { resolve(d); return; }
+      }
+
+      // Step 3: halve dimensions and try again
+      const c2 = document.createElement("canvas");
+      c2.width = Math.round(w * 0.5); c2.height = Math.round(h * 0.5);
+      c2.getContext("2d").drawImage(canvas, 0, 0, c2.width, c2.height);
+      const d2 = c2.toDataURL("image/jpeg", 0.30);
+      if (d2.length <= MAX_B64) { resolve(d2); return; }
+
+      resolve(null); // Cannot compress small enough — caller will list name only
+    };
+
+    img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(null); };
+    img.src = objUrl;
+  });
+}
+
+// ── Build Teams Adaptive Card ─────────────────────────────────────────────
+async function buildTeamsCard(f) {
+  const now = new Date().toLocaleString("en-GB", {
+    day:"2-digit", month:"short", year:"numeric",
+    hour:"2-digit", minute:"2-digit"
+  });
+
+  const body = [
+    { type:"TextBlock", text:"PROJECT ISSUE REPORT", weight:"Bolder", size:"Large", color:"Accent", wrap:true },
+    { type:"TextBlock", text:now, size:"Small", isSubtle:true, spacing:"None" },
+    { type:"FactSet", spacing:"Medium", facts:[
+      { title:"Project Name", value:f.pname },
+      { title:"Project No.",  value:f.pnum  }
+    ]},
+    { type:"TextBlock", text:"Issue Description", weight:"Bolder", spacing:"Medium", wrap:true },
+    { type:"TextBlock", text:f.issue, wrap:true, spacing:"Small" }
+  ];
+
+  if (files.length > 0) {
+    body.push({
+      type:"TextBlock",
+      text:`Attached Files (${files.length})`,
+      weight:"Bolder", spacing:"Medium", wrap:true
+    });
+
+    for (const file of files) {
+      if (file.type.startsWith("image/")) {
+        // Try to embed compressed image
+        const dataUrl = await compressImage(file);
+        if (dataUrl) {
+          body.push({ type:"Image", url:dataUrl, size:"Large", spacing:"Small" });
+          body.push({ type:"TextBlock", text:file.name, size:"Small", isSubtle:true, spacing:"None" });
+        } else {
+          // Too large even after compression
+          body.push({ type:"TextBlock", text:`📎  ${file.name}  (${fSz(file.size)}) — too large to embed`, wrap:true, spacing:"Small", color:"Warning" });
+        }
+      } else {
+        // Non-image: list name only
+        body.push({ type:"TextBlock", text:`📎  ${file.name}  (${fSz(file.size)})`, wrap:true, spacing:"Small" });
+      }
+    }
+  }
+
+  return {
+    type:"message",
+    attachments:[{
+      contentType:"application/vnd.microsoft.card.adaptive",
+      contentUrl:null,
+      content:{
+        $schema:"http://adaptivecards.io/schemas/adaptive-card.json",
+        type:"AdaptiveCard",
+        version:"1.2",
+        body
+      }
+    }]
+  };
+}
+
+function readAsDataURL(file) {
+  return new Promise((res, rej) => {
+    if (!file.type.startsWith("image/")) {
+      // Non-image: just read raw (won't be embedded as Image element)
+      const r = new FileReader();
+      r.onload  = () => res(r.result);
+      r.onerror = () => rej(new Error("Read failed"));
+      r.readAsDataURL(file);
+      return;
+    }
+
+    const img = new Image();
+    const objUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(objUrl);
+
+      // Max dimensions — keeps image recognisable but small enough
+      const MAX_W = 800, MAX_H = 600;
+      let w = img.width, h = img.height;
+      if (w > MAX_W || h > MAX_H) {
+        const ratio = Math.min(MAX_W / w, MAX_H / h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+
+      // Try quality 0.7 first; if still too large, reduce further
+      let dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+
+      // Teams adaptive card image URL must be < ~200KB base64
+      // base64 size = ceil(bytes / 3) * 4  →  200KB base64 ≈ 150KB raw
+      if (dataUrl.length > 200000) {
+        dataUrl = canvas.toDataURL("image/jpeg", 0.45);
+      }
+      if (dataUrl.length > 200000) {
+        // Halve dimensions again
+        const c2 = document.createElement("canvas");
+        c2.width = Math.round(w * 0.6); c2.height = Math.round(h * 0.6);
+        c2.getContext("2d").drawImage(canvas, 0, 0, c2.width, c2.height);
+        dataUrl = c2.toDataURL("image/jpeg", 0.5);
+      }
+
+      res(dataUrl);
+    };
+
+    img.onerror = () => { URL.revokeObjectURL(objUrl); rej(new Error("Image load failed")); };
+    img.src = objUrl;
+  });
+}
+
+// ── PREVIEW ───────────────────────────────────────────────────────────────
+function preview() {
+  const f = getF();
+  if (!valid(f)) return;
+  document.getElementById("bubble-content").innerHTML = renderBubble(buildWAMsg(f));
+  const now = new Date();
+  document.getElementById("bubble-time").textContent = String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+  document.getElementById("prev-num").textContent = f.waNum ? "+"+f.waNum : "Not set";
+  document.getElementById("prev-card").style.display = "block";
+  document.getElementById("prev-card").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function renderBubble(raw) {
+  return raw
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/\*(.*?)\*/g,"<b>$1</b>").replace(/_(.*?)_/g,"<i>$1</i>")
+    .replace(/(━+)/g,'<span class="sep">$1</span>').replace(/\n/g,"<br>");
+}
+
+function copyMsg() {
+  const msg = buildWAMsg(getF());
+  navigator.clipboard.writeText(msg).catch(() => { const t=document.createElement("textarea");t.value=msg;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t); });
+  const btn = document.getElementById("copy-btn");
+  btn.textContent="✓ Copied!"; btn.classList.add("done");
+  setTimeout(()=>{btn.textContent="📋 Copy";btn.classList.remove("done");},2000);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────
+let _tt;
+function toast(msg, type="ok") {
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.className = "show "+type;
+  clearTimeout(_tt); _tt = setTimeout(()=>{ el.className = type; }, 3200);
+}
+
+// ── MAIN SUBMIT — sends to BOTH WhatsApp and Teams ────────────────────────
+async function submitAll() {
+  const f = getF();
+  if (!valid(f)) { closePreview(); return; }
+
+  const btn  = document.getElementById("sub-btn");
+  const conf = document.getElementById("conf-btn");
+  [btn, conf].forEach(b => { if(b){ b.disabled=true; b.innerHTML='<span style="font-size:.85rem">⏳</span> Sending…'; }});
+
+  let waOk = false, teamsOk = false, teamsErr = "";
+
+  // ── 1. Send to Teams (if configured) ─────────────────────────────────
+  if (TEAMS_WEBHOOK) {
+    try {
+      sp("Building Teams card…", 20);
+      const card = await buildTeamsCard(f);
+      sp("Sending to Microsoft Teams…", 55);
+      const res = await fetch(TEAMS_WEBHOOK, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(card)
+      });
+      if (!res.ok && res.status !== 202) throw new Error("HTTP " + res.status);
+      teamsOk = true;
+      sp("Teams delivered ✓", 80);
+    } catch(e) {
+      teamsErr = e.message === "Failed to fetch" || e.message.includes("NetworkError")
+        ? "CORS — open via web server (npx serve .)"
+        : e.message;
+    }
+  }
+
+  // ── 2. Open WhatsApp ──────────────────────────────────────────────────
+  sp("Opening WhatsApp…", 92);
+  if (f.waNum) {
+    window.open("https://wa.me/"+f.waNum+"?text="+encodeURIComponent(buildWAMsg(f)), "_blank");
+    waOk = true;
+  }
+
+  // ── 3. Show results ───────────────────────────────────────────────────
+  await new Promise(r => setTimeout(r, 500));
+  hp();
+  [btn, conf].forEach(b => { if(b){ b.disabled=false; b.innerHTML='<div class="submit-icons">💬 🟣</div> Submit Report'; }});
+  if(conf){ conf.innerHTML='<span class="submit-icons" style="font-size:.8rem;">💬 🟣</span>&nbsp;Confirm &amp; Send'; }
+
+  showResults(waOk, teamsOk, teamsErr);
+}
+
+// ── SHOW RESULTS ──────────────────────────────────────────────────────────
+function showResults(waOk, teamsOk, teamsErr) {
+  document.getElementById("form-card").style.display = "none";
+  document.getElementById("prev-card").style.display = "none";
+  document.getElementById("suc-card").style.display  = "block";
+
+  const del = document.getElementById("suc-delivery");
+  del.innerHTML = "";
+
+  // WhatsApp row
+  const waRow = document.createElement("div");
+  waRow.className = "suc-row " + (waOk ? "ok-wa" : "skip");
+  waRow.innerHTML = `<span class="suc-ico">💬</span><div><div class="suc-lbl">WhatsApp</div><div>${waOk ? "Tap <strong>Send</strong> in WhatsApp to deliver the report." : "Not configured."}</div></div>`;
+  del.appendChild(waRow);
+
+  // Teams row
+  if (TEAMS_WEBHOOK) {
+    const tRow = document.createElement("div");
+    tRow.className = "suc-row " + (teamsOk ? "ok-teams" : "skip");
+    tRow.innerHTML = `<span class="suc-ico">🟣</span><div><div class="suc-lbl">Microsoft Teams ${teamsOk ? "" : "(failed)"}</div><div>${teamsOk ? "Card posted to your Teams channel." + (files.length > 0 ? " Files attached." : "") : teamsErr}</div></div>`;
+    del.appendChild(tRow);
+  }
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function closePreview() {
+  document.getElementById("prev-card").style.display = "none";
+  document.getElementById("form-card").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function reset() {
+  ["pname","pnum","issue"].forEach(id => document.getElementById(id).value = "");
+  cctEl.textContent = "0 / 800"; cctEl.style.color = "var(--muted)";
+  files = []; renderChips(); hp();
+  ["pname","pnum","issue"].forEach(id => document.getElementById(id).classList.remove("inv"));
+  ["e-pname","e-pnum","e-issue"].forEach(id => document.getElementById(id).classList.remove("show"));
+  document.getElementById("form-card").style.display = "block";
+  document.getElementById("prev-card").style.display = "none";
+  document.getElementById("suc-card").style.display  = "none";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</body>
+</html>
