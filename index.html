@@ -302,9 +302,9 @@ textarea{resize:vertical;min-height:100px;line-height:1.55;}
 // ║  Leave TEAMS_WEBHOOK = "" to disable Teams              ║
 // ╚══════════════════════════════════════════════════════════╝
 
-const WA_NUMBER     = "919995397808";      // ← WhatsApp number
+const WA_NUMBER     = "60123456789";      // ← WhatsApp number
 const WA_DISPLAY    = "+60 123 456 789";  // ← display format
-const TEAMS_WEBHOOK = "https://defaultb4a8565fd9a04d73b10a6a22d6f677.7b.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ba21ce6e01f74d7e9474cb7e8c6bb755/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=5cX0U4lhiCtftrfLIWqyMx9tBZoebPr9hgL_B2pVXJE";                 // ← paste Teams webhook URL here
+const TEAMS_WEBHOOK = "";                 // ← paste Teams webhook URL here
 
 // ════════════════════════════════════════════════════════════
 
@@ -390,45 +390,42 @@ function buildWAMsg(f) {
   ].join("\n");
 }
 
-// ── Compress image using canvas → returns base64 JPEG ─────────────────────
-// Tries multiple quality levels until result fits within Teams limit.
-// Returns null if the image cannot be compressed small enough.
+// ── Compress image → base64 JPEG within Power Automate chat limit ──────────
+// Power Automate chat webhook limit is very strict (~60 KB total payload).
+// We target 40 KB base64 max to leave room for card text.
 async function compressImage(file) {
   return new Promise((resolve) => {
-    const MAX_B64 = 150000; // ~150 KB base64 — leaves headroom for rest of payload
+    const MAX_B64 = 40000; // 40 KB hard limit for chat webhook
+
     const img = new Image();
     const objUrl = URL.createObjectURL(file);
 
     img.onload = () => {
       URL.revokeObjectURL(objUrl);
 
-      // Step 1: resize to max 600×450
-      let w = img.width, h = img.height;
-      const MAX_W = 600, MAX_H = 450;
-      if (w > MAX_W || h > MAX_H) {
-        const r = Math.min(MAX_W / w, MAX_H / h);
+      // Resize candidates — try smallest first
+      const sizes = [
+        { w: 320, h: 240 },
+        { w: 240, h: 180 },
+        { w: 160, h: 120 },
+      ];
+
+      for (const { w: maxW, h: maxH } of sizes) {
+        let w = img.width, h = img.height;
+        const r = Math.min(maxW / w, maxH / h);
         w = Math.round(w * r); h = Math.round(h * r);
+
+        const c = document.createElement("canvas");
+        c.width = w; c.height = h;
+        c.getContext("2d").drawImage(img, 0, 0, w, h);
+
+        for (const q of [0.5, 0.35, 0.2]) {
+          const d = c.toDataURL("image/jpeg", q);
+          if (d.length <= MAX_B64) { resolve(d); return; }
+        }
       }
 
-      const canvas = document.createElement("canvas");
-      canvas.width = w; canvas.height = h;
-      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-
-      // Step 2: try reducing quality until within limit
-      const qualities = [0.65, 0.45, 0.30, 0.20];
-      for (const q of qualities) {
-        const d = canvas.toDataURL("image/jpeg", q);
-        if (d.length <= MAX_B64) { resolve(d); return; }
-      }
-
-      // Step 3: halve dimensions and try again
-      const c2 = document.createElement("canvas");
-      c2.width = Math.round(w * 0.5); c2.height = Math.round(h * 0.5);
-      c2.getContext("2d").drawImage(canvas, 0, 0, c2.width, c2.height);
-      const d2 = c2.toDataURL("image/jpeg", 0.30);
-      if (d2.length <= MAX_B64) { resolve(d2); return; }
-
-      resolve(null); // Cannot compress small enough — caller will list name only
+      resolve(null); // Cannot compress small enough
     };
 
     img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(null); };
